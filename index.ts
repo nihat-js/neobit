@@ -8,17 +8,11 @@ const { apiBuilder } = require('./lib/apiBuilder');
 
 
 
-
-
-
-
-
-
-class Neobit implements INeobit {
+class Neobit {
   private port: number
   private isDebugging: boolean
   private urlPrefix: string
-  private endPoints: IEndPoints[]
+  public endPoints: IEndPoints[]
   constructor(isDebugging = true) {
     this.port = 3000;
     this.endPoints = [];
@@ -26,28 +20,28 @@ class Neobit implements INeobit {
     this.urlPrefix = "/"; //for grouping
   }
 
-  buildApiFromObject({ data }) { apiBuilder({ data, dataType: "object" }) }
-  buildApiFromJson({ data }) { apiBuilder({ data, dataType: "object" }) }
+  buildApiFromObject({ object }: { object: any }) { apiBuilder.call(this, { data: object, dataType: "object" }) }
+  buildApiFromJson({ filePath, prefix }: { filePath: string, prefix: string }) { apiBuilder.call(this, { filePath, data: filePath, dataType: "json" }) }
 
-  async createTemplateData({ templateName = "users", override = true, destination }) {
-    let source = path.resolve(__dirname, "default", templateName + ".json")
+  // async createTemplateData({ templateName = "users", override = true, destination }: { templateName: string, override: boolean, destination: string }) {
+  //   let source = path.resolve(__dirname, "default", templateName + ".json")
 
-    destination = destination || path.resolve(process.cwd(), "db", templateName + ".json")
-    await fs.mkdir(path.resolve(process.cwd(), "db"))
-    console.log({ source, destination })
+  //   destination = destination || path.resolve(process.cwd(), "db", templateName + ".json")
+  //   await fs.mkdir(path.resolve(process.cwd(), "db"))
+  //   console.log({ source, destination })
 
 
-    await fs.copyFile(source, destination)
-  }
+  //   await fs.copyFile(source, destination)
+  // }
 
   //
   get(url: string, cb: ReqResFunction): void {
-    this.endPoints.push({ method: 'GET', url: this.getFinalUrl(url), cb  : cb});
+    this.endPoints.push({ method: 'GET', url: this.getFinalUrl(url), cb: cb });
   }
   post(url: string, cb: ReqResFunction) {
     this.endPoints.push({ method: 'POST', url: this.getFinalUrl(url), cb });
   }
-  delete(url, cb: ReqResFunction) {
+  delete(url: string, cb: ReqResFunction) {
     this.endPoints.push({ method: 'DELETE', url: this.getFinalUrl(url), cb });
   }
   put(url: string, cb: ReqResFunction) {
@@ -57,11 +51,10 @@ class Neobit implements INeobit {
     this.endPoints.push({ method: 'PATCH', url: this.getFinalUrl(url), cb });
   }
   getFinalUrl(url: string) {
-    if (url.startsWith("/"))
-      url = url.slice(1);
+    if (url.startsWith("/")) url = url.slice(1);
     return this.urlPrefix + url;
   }
-  group(url : string, cb : () =>{} ) {
+  group(url: string, cb: () => {}) {
     if (url.startsWith("/"))
       url = url.slice(1);
     if (url.endsWith('/'))
@@ -70,12 +63,12 @@ class Neobit implements INeobit {
     cb();
     this.urlPrefix = "/";
   }
-  listen(port : number) {
+  listen(port: number) {
     if (port) this.port = port
     if (this.isDebugging) console.log({ endPoints: this.endPoints });
 
 
-    http.createServer((req : Request, res : Response) => {
+    http.createServer((req: any, res: any) => {
       // users?id=:id//
       let [myUrlArr, queries] = parseAndRemoveQueries(splitToParts(req.url))
 
@@ -99,14 +92,9 @@ class Neobit implements INeobit {
         x.cb(cReq, cRes); break;
 
 
-        // if (areArraysSame(endPointArray, myUrlArr)) {
-        //   const [cReq, cRes] = createCustomReqRes(req, res, params, queries);
-        //   x.cb(cReq, cRes); break;
-        // }
         // api user :id
         // api user 5
 
-        // if (x.url.indexOf(":") > -1) {
         //   let endPointArrIndexTillColon = endPointUrl.findIndex(el => /^:/.test(el))
         //   // let myUrlArrIndexTillColon  = myUrl.findIndex(el => /^:/.test(el))
 
@@ -114,21 +102,14 @@ class Neobit implements INeobit {
         //   let part2 = myUrl.slice(0, endPointArrIndexTillColon).join("/")
         //   console.log({ part1, part2 })
 
-        //   if (part1 != part2) continue;
         //   let newEndPointArr = endPointUrl.slice(endPointArrIndexTillColon,)
         //   let newMyUrlArr = myUrl.slice(endPointArrIndexTillColon)
 
-        //   // console.log("line69",newEndPointArr,newMyUrlArr)
 
-        //   let params = {}
         //   for (let i in newEndPointArr) {
         //     params[newEndPointArr[i].slice(1,)] = newMyUrlArr[i]
         //   }
         //   // console.log({ params })
-        //   const [cReq, cRes] = createCustomReqRes(req, res, params)
-        //   x.cb(cReq, cRes); break;
-        //   // return false
-        // }
 
 
       }
@@ -150,9 +131,10 @@ class Neobit implements INeobit {
 
 
 }
-function splitToParts(url : string) : string[] { return url.split("/").filter(el => el != "") }
+function splitToParts(url: string): string[] { return url.split("/").filter(el => el != "") }
 
-function areArraysSame(arr1 : [], arr2 : []) {
+
+function areArraysSame(arr1: [], arr2: []) {
   for (let i = 0; i < arr1.length; i++) {
     if (arr1[i] !== arr2[i]) {
       return false;
@@ -162,7 +144,7 @@ function areArraysSame(arr1 : [], arr2 : []) {
 
 }
 
-function multiSplit(str : string, symbolsArr : string[]) {
+function multiSplit(str: string, symbolsArr: string[]) {
   let arr = []
   let part = ""
   for (let i in str) {
@@ -177,7 +159,7 @@ function multiSplit(str : string, symbolsArr : string[]) {
   return arr
 }
 
-function parseAndRemoveQueries(urlArr : string) {
+function parseAndRemoveQueries(urlArr: string[]): [string[], {}] {
   let queries = {}, newArr
   newArr = urlArr.map(el => {
     let arr = multiSplit(el, ["?", "&", "="])
@@ -192,6 +174,7 @@ function parseAndRemoveQueries(urlArr : string) {
   })
   return [newArr, queries]
 }
+
 
 module.exports = {
   Neobit

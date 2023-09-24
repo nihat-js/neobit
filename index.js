@@ -5,24 +5,25 @@ const fs = require('fs/promises');
 const path = require('path');
 const { specialReqRes, createCustomReqRes } = require('./lib/createCustomReqRes');
 const { apiBuilder } = require('./lib/apiBuilder');
-class Neotin {
+class Neobit {
     constructor(isDebugging = true) {
         this.port = 3000;
         this.endPoints = [];
         this.isDebugging = isDebugging;
         this.urlPrefix = "/"; //for grouping
     }
-    buildApiFromObject({ data }) { apiBuilder({ data, dataType: "object" }); }
-    buildApiFromJson({ data }) { apiBuilder({ data, dataType: "object" }); }
-    async createTemplateData({ templateName = "users", override = true, destination }) {
-        let source = path.resolve(__dirname, "default", templateName + ".json");
-        destination = destination || path.resolve(process.cwd(), "db", templateName + ".json");
-        await fs.mkdir(path.resolve(process.cwd(), "db"));
-        console.log({ source, destination });
-        await fs.copyFile(source, destination);
-    }
+    buildApiFromObject({ object }) { apiBuilder.call(this, { data: object, dataType: "object" }); }
+    buildApiFromJson({ filePath, prefix }) { apiBuilder.call(this, { filePath, data: filePath, dataType: "json" }); }
+    // async createTemplateData({ templateName = "users", override = true, destination }: { templateName: string, override: boolean, destination: string }) {
+    //   let source = path.resolve(__dirname, "default", templateName + ".json")
+    //   destination = destination || path.resolve(process.cwd(), "db", templateName + ".json")
+    //   await fs.mkdir(path.resolve(process.cwd(), "db"))
+    //   console.log({ source, destination })
+    //   await fs.copyFile(source, destination)
+    // }
+    //
     get(url, cb) {
-        this.endPoints.push({ method: 'GET', url: this.getFinalUrl(url), cb });
+        this.endPoints.push({ method: 'GET', url: this.getFinalUrl(url), cb: cb });
     }
     post(url, cb) {
         this.endPoints.push({ method: 'POST', url: this.getFinalUrl(url), cb });
@@ -75,31 +76,19 @@ class Neotin {
                 const [cReq, cRes] = createCustomReqRes(req, res, params, queries);
                 x.cb(cReq, cRes);
                 break;
-                // if (areArraysSame(endPointArray, myUrlArr)) {
-                //   const [cReq, cRes] = createCustomReqRes(req, res, params, queries);
-                //   x.cb(cReq, cRes); break;
-                // }
                 // api user :id
                 // api user 5
-                // if (x.url.indexOf(":") > -1) {
                 //   let endPointArrIndexTillColon = endPointUrl.findIndex(el => /^:/.test(el))
                 //   // let myUrlArrIndexTillColon  = myUrl.findIndex(el => /^:/.test(el))
                 //   let part1 = endPointUrl.slice(0, endPointArrIndexTillColon).join("/")
                 //   let part2 = myUrl.slice(0, endPointArrIndexTillColon).join("/")
                 //   console.log({ part1, part2 })
-                //   if (part1 != part2) continue;
                 //   let newEndPointArr = endPointUrl.slice(endPointArrIndexTillColon,)
                 //   let newMyUrlArr = myUrl.slice(endPointArrIndexTillColon)
-                //   // console.log("line69",newEndPointArr,newMyUrlArr)
-                //   let params = {}
                 //   for (let i in newEndPointArr) {
                 //     params[newEndPointArr[i].slice(1,)] = newMyUrlArr[i]
                 //   }
                 //   // console.log({ params })
-                //   const [cReq, cRes] = createCustomReqRes(req, res, params)
-                //   x.cb(cReq, cRes); break;
-                //   // return false
-                // }
             }
         })
             .listen(this.port, () => {
@@ -156,5 +145,5 @@ function parseAndRemoveQueries(urlArr) {
     return [newArr, queries];
 }
 module.exports = {
-    Neotin
+    Neobit
 };
