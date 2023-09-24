@@ -6,25 +6,13 @@ const path = require('path')
 const { specialReqRes, createCustomReqRes } = require('./lib/createCustomReqRes');
 const { apiBuilder } = require('./lib/apiBuilder');
 
-type ReqResFunction = (request?: IReq, response?: IRes) => void
 
 
-interface IRes {
-  send: (data: string) => void
-  sendFile: (filePath: string) => void
-}
-interface IReq {
-  method: string,
-}
 
-interface IEndPoints {
-  method: "GET" | "POST" | "UPDATE" | 'PATCH' | 'DELETE' | "PUT",
-  url: string,
-  cb: ReqResFunction
-}
-interface INeobit {
-  get: (url: string, cb: ReqResFunction) => {}
-}
+
+
+
+
 
 class Neobit implements INeobit {
   private port: number
@@ -73,7 +61,7 @@ class Neobit implements INeobit {
       url = url.slice(1);
     return this.urlPrefix + url;
   }
-  group(url, cb) {
+  group(url : string, cb : () =>{} ) {
     if (url.startsWith("/"))
       url = url.slice(1);
     if (url.endsWith('/'))
@@ -82,12 +70,12 @@ class Neobit implements INeobit {
     cb();
     this.urlPrefix = "/";
   }
-  listen(port) {
+  listen(port : number) {
     if (port) this.port = port
     if (this.isDebugging) console.log({ endPoints: this.endPoints });
 
 
-    http.createServer((req, res) => {
+    http.createServer((req : Request, res : Response) => {
       // users?id=:id//
       let [myUrlArr, queries] = parseAndRemoveQueries(splitToParts(req.url))
 
@@ -162,9 +150,9 @@ class Neobit implements INeobit {
 
 
 }
-function splitToParts(url) { return url.split("/").filter(el => el != "") }
+function splitToParts(url : string) : string[] { return url.split("/").filter(el => el != "") }
 
-function areArraysSame(arr1, arr2) {
+function areArraysSame(arr1 : [], arr2 : []) {
   for (let i = 0; i < arr1.length; i++) {
     if (arr1[i] !== arr2[i]) {
       return false;
@@ -174,7 +162,7 @@ function areArraysSame(arr1, arr2) {
 
 }
 
-function multiSplit(str, symbolsArr) {
+function multiSplit(str : string, symbolsArr : string[]) {
   let arr = []
   let part = ""
   for (let i in str) {
@@ -189,7 +177,7 @@ function multiSplit(str, symbolsArr) {
   return arr
 }
 
-function parseAndRemoveQueries(urlArr) {
+function parseAndRemoveQueries(urlArr : string) {
   let queries = {}, newArr
   newArr = urlArr.map(el => {
     let arr = multiSplit(el, ["?", "&", "="])
