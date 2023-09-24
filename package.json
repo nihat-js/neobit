@@ -1,0 +1,18 @@
+{
+  "name": "neobit",
+  "version": "1.0.0",
+  "description": "HTTP server app with Api builder from JSON,Object",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "types": "./neotin.d.ts",
+  "devDependencies": {
+    "@types/node": "^20.6.4",
+    "typescript": "^5.2.2"
+  }
+}

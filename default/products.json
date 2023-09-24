@@ -1,0 +1,107 @@
+[
+  {
+      "id": 1,
+      "name": "Cozy Blanket",
+      "description": "A soft, plush blanket perfect for snuggling up on the couch with a good book on a chilly evening.",
+      "price": 29.99,
+      "quantity": 20
+  },
+  {
+      "id": 2,
+      "name": "Stainless Steel Water Bottle",
+      "description": "A durable, eco-friendly water bottle that keeps your beverages hot or cold for hours, ideal for staying hydrated on the go.",
+      "price": 19.99,
+      "quantity": 15
+  },
+  {
+      "id": 3,
+      "name": "Classic Leather Wallet",
+      "description": "A stylish, genuine leather wallet with multiple compartments for cards, cash, and IDs, designed to keep you organized and fashionable.",
+      "price": 49.99,
+      "quantity": 25
+  },
+  {
+      "id": 4,
+      "name": "Gourmet Coffee Beans",
+      "description": "A premium blend of Arabica and Robusta coffee beans, sourced from the finest coffee regions around the world, delivering a rich and aromatic cup of coffee.",
+      "price": 12.99,
+      "quantity": 30
+  },
+  {
+      "id": 5,
+      "name": "Wireless Bluetooth Earbuds",
+      "description": "Sleek, wireless earbuds with crystal clear sound quality, perfect for workouts, commutes, or enjoying music without the hassle of cords.",
+      "price": 69.99,
+      "quantity": 10
+  },
+  {
+      "id": 6,
+      "name": "Organic Bamboo Cutting Board",
+      "description": "A high-quality, eco-friendly cutting board made from sustainable bamboo, designed to be gentle on knives and easy to clean.",
+      "price": 34.99,
+      "quantity": 18
+  },
+  {
+      "id": 7,
+      "name": "Professional Chef's Knife",
+      "description": "A precision-crafted, high-carbon stainless steel knife designed for chefs and culinary enthusiasts, offering exceptional balance and cutting performance.",
+      "price": 89.99,
+      "quantity": 22
+  },
+  {
+      "id": 8,
+      "name": "Luxury Scented Candle",
+      "description": "A hand-poured soy wax candle with a soothing aroma, perfect for creating a relaxing ambiance in any room.",
+      "price": 24.99,
+      "quantity": 12
+  },
+  {
+      "id": 9,
+      "name": "Fitness Resistance Bands Set",
+      "description": "A versatile set of resistance bands for a full-body workout, suitable for all fitness levels, providing an effective way to stay in shape at home or on the go.",
+      "price": 39.99,
+      "quantity": 35
+  },
+  {
+      "id": 10,
+      "name": "Gourmet Chocolate Truffles",
+      "description": "Indulge in a box of handcrafted, decadent chocolate truffles made from the finest cocoa, perfect for special occasions or as a luxurious treat.",
+      "price": 29.99,
+      "quantity": 5
+  },
+  {
+      "id": 11,
+      "name": "Natural Bamboo Bath Towel Set",
+      "description": "A set of ultra-absorbent, eco-friendly bamboo towels, luxuriously soft and quick-drying, enhancing your bathing experience.",
+      "price": 49.99,
+      "quantity": 8
+  },
+  {
+      "id": 12,
+      "name": "Aromatherapy Essential Oil Diffuser",
+      "description": "Create a calming atmosphere with this stylish diffuser that disperses essential oils, promoting relaxation and well-being in any space.",
+      "price": 44.99,
+      "quantity": 17
+  },
+  {
+      "id": 13,
+      "name": "Handcrafted Ceramic Mug",
+      "description": "Enjoy your favorite beverages in a beautifully handcrafted ceramic mug, designed for both aesthetic appeal and comfortable grip.",
+      "price": 19.99,
+      "quantity": 14
+  },
+  {
+      "id": 14,
+      "name": "Portable Bluetooth Speaker",
+      "description": "Experience high-quality, portable audio with this sleek Bluetooth speaker, perfect for parties, picnics, or enjoying music on the move.",
+      "price": 79.99,
+      "quantity": 9
+  },
+  {
+      "id": 15,
+      "name": "Elegant Leather Journal",
+      "description": "Capture your thoughts, dreams, and inspirations in this finely crafted leather journal, a timeless companion for writers and creatives.",
+      "price": 36.99,
+      "quantity": 11
+  }
+]
