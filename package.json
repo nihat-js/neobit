@@ -1,13 +1,13 @@
 {
   "name": "neobit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Fast HTTP app with Api builder from JSON,Object",
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": ["neobit","server","neo"],
   "author": "",
   "license": "ISC",
   "types": "./global.d.ts",

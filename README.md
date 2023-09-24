@@ -2,39 +2,39 @@
 
   
 
-Get  route syntax 
+### Get  route syntax 
 
-    neotin.get("/products",(req,res)=>{
+    neo.get("/products",(req,res)=>{
     	res.send('My products')
     })
 
-Post route syntax
+### Post route syntax
 
-	 neotin.post("/products",(req,res)=>{
+	 neo.post("/products",(req,res)=>{
     	res.send('My products')
     })
- PUT route syntax
+### PUT route syntax
 
-	 neotin.put("/products",(req,res)=>{
+	 neo.put("/products",(req,res)=>{
     	res.send('My products')
     })
  
- PATCH route syntax   
+### PATCH route syntax   
 			
-	neotin.patch("/products",(req,res)=>{
+	neo.patch("/products",(req,res)=>{
     	res.send('My products')
     })
 
 
   
 
-#### It als supports group route nesting
+### It als supports group route nesting
 
-    neotin.group('/api', () => {
+    neo.group('/api', () => {
     
-	    neotin.group('/comments/', () => {
+	    neo.group('/comments/', () => {
 	    
-		    neotin.get("/user", (req, res) => {
+		    neo.get("/user", (req, res) => {
 			    res.send("User section")
 		    })
 		})
@@ -44,6 +44,6 @@ Post route syntax
 #### Example Syntax for params route "api/auth/:lang:/:token". 
 Params should be seperated by forward slash and you must use only one param between two slashes. Params are stored in req.params object.
 
-    neotin.get('/tickets/:lang/:id',(req,res)=>{
+    neo.get('/tickets/:lang/:id',(req,res)=>{
       res.send(`Ticket  lang = ${req.params.lang} and token= ${req.params.token}`)
     })
