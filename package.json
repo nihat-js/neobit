@@ -1,7 +1,7 @@
 {
   "name": "neobit",
   "version": "1.0.0",
-  "description": "HTTP server app with Api builder from JSON,Object",
+  "description": "Fast HTTP app with Api builder from JSON,Object",
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
@@ -10,7 +10,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "types": "./neotin.d.ts",
+  "types": "./global.d.ts",
   "devDependencies": {
     "@types/express": "^4.17.18",
     "@types/node": "^20.6.4",
