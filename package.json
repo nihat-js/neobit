@@ -1,6 +1,6 @@
 {
   "name": "neobit",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Fast HTTP app with Api builder ",
   "main": "index.js",
   "type": "commonjs",
@@ -13,7 +13,7 @@
   "license": "ISC",
   "types": "./global.d.ts",
   "bin": {
-    "live-server" : "./live-server.js"
+    "neobit live" : "./live.js"
   },
   "devDependencies": {
     "@types/express": "^4.17.18",
