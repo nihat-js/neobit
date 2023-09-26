@@ -1,4 +1,4 @@
-## Neotin - Server with sample data, live server 
+# Neobit - Server with sample data, live server 
 
 ## Live Server
 Install neobit globally
