@@ -4,38 +4,65 @@ const http = require('http');
 const fs = require('fs/promises');
 const path = require('path');
 const { specialReqRes, createCustomReqRes } = require('./lib/createCustomReqRes');
-const { apiBuilder } = require('./lib/apiBuilder');
+const { apiBuilderFromArray } = require("./lib/apiBuilder/index");
 class Neobit {
     constructor(isDebugging = true) {
-        this.port = 3000;
         this.endPoints = [];
+        this.port = 3000;
+        // this.endPoints = [];
         this.isDebugging = isDebugging;
         this.urlPrefix = "/"; //for grouping
     }
-    buildApiFromObject({ object }) { apiBuilder.call(this, { data: object, dataType: "object" }); }
-    buildApiFromJson({ filePath, prefix }) { apiBuilder.call(this, { filePath, data: filePath, dataType: "json" }); }
+    // async buildApiFromObject({ data }: { data: any }) { return new Promise((res, rej) =>  res(apiBuilder.call(this, { data, dataType: "object" }) )   )  }
+    // buildApiFromJson({ filePath, prefix }: { filePath: string, prefix: string }) { apiBuilder.call(this, { filePath, data: filePath, dataType: "json" }) }
+    buildApiFromArray({ name, prefix, arr }) { apiBuilderFromArray.call(this, { name, prefix, arr }); }
     // async createTemplateData({ templateName = "users", override = true, destination }: { templateName: string, override: boolean, destination: string }) {
-    //   let source = path.resolve(__dirname, "default", templateName + ".json")
+    //   let source = path.resolve(__dirname, "defaulte", templateName + ".json")
     //   destination = destination || path.resolve(process.cwd(), "db", templateName + ".json")
     //   await fs.mkdir(path.resolve(process.cwd(), "db"))
     //   console.log({ source, destination })
     //   await fs.copyFile(source, destination)
     // }
     //
-    get(url, cb) {
-        this.endPoints.push({ method: 'GET', url: this.getFinalUrl(url), cb: cb });
+    get(url, ...functions) {
+        if (functions.length == 0) {
+            throw new Error("CB is required");
+        }
+        let cb = functions.at(-1);
+        let middlewares = functions.slice(0, functions.length - 1);
+        this.endPoints.push({ method: 'GET', url: this.getFinalUrl(url), cb, middlewares });
     }
-    post(url, cb) {
-        this.endPoints.push({ method: 'POST', url: this.getFinalUrl(url), cb });
+    post(url, ...functions) {
+        if (functions.length == 0) {
+            throw new Error("CB is required");
+        }
+        let cb = functions.at(-1);
+        let middlewares = functions.slice(0, functions.length - 1);
+        this.endPoints.push({ method: 'POST', url: this.getFinalUrl(url), cb, middlewares });
     }
-    delete(url, cb) {
-        this.endPoints.push({ method: 'DELETE', url: this.getFinalUrl(url), cb });
+    delete(url, ...functions) {
+        if (functions.length == 0) {
+            throw new Error("CB is required");
+        }
+        let cb = functions.at(-1);
+        let middlewares = functions.slice(0, functions.length - 1);
+        this.endPoints.push({ method: 'DELETE', url: this.getFinalUrl(url), cb, middlewares });
     }
-    put(url, cb) {
-        this.endPoints.push({ method: 'PUT', url: this.getFinalUrl(url), cb });
+    put(url, ...functions) {
+        if (functions.length == 0) {
+            throw new Error("CB is required");
+        }
+        let cb = functions.at(-1);
+        let middlewares = functions.slice(0, functions.length - 1);
+        this.endPoints.push({ method: 'PUT', url: this.getFinalUrl(url), cb, middlewares });
     }
-    patch(url, cb) {
-        this.endPoints.push({ method: 'PATCH', url: this.getFinalUrl(url), cb });
+    patch(url, ...functions) {
+        if (functions.length == 0) {
+            throw new Error("CB is required");
+        }
+        let cb = functions.at(-1);
+        let middlewares = functions.slice(0, functions.length - 1);
+        this.endPoints.push({ method: 'PATCH', url: this.getFinalUrl(url), cb, middlewares });
     }
     getFinalUrl(url) {
         if (url.startsWith("/"))
@@ -55,7 +82,7 @@ class Neobit {
         if (port)
             this.port = port;
         if (this.isDebugging)
-            console.log({ endPoints: this.endPoints });
+            console.log(this.endPoints);
         http.createServer((req, res) => {
             // users?id=:id//
             let [myUrlArr, queries] = parseAndRemoveQueries(splitToParts(req.url));
@@ -74,25 +101,34 @@ class Neobit {
                     }
                 }
                 const [cReq, cRes] = createCustomReqRes(req, res, params, queries);
-                x.cb(cReq, cRes);
-                break;
-                // api user :id
-                // api user 5
-                //   let endPointArrIndexTillColon = endPointUrl.findIndex(el => /^:/.test(el))
-                //   // let myUrlArrIndexTillColon  = myUrl.findIndex(el => /^:/.test(el))
-                //   let part1 = endPointUrl.slice(0, endPointArrIndexTillColon).join("/")
-                //   let part2 = myUrl.slice(0, endPointArrIndexTillColon).join("/")
-                //   console.log({ part1, part2 })
-                //   let newEndPointArr = endPointUrl.slice(endPointArrIndexTillColon,)
-                //   let newMyUrlArr = myUrl.slice(endPointArrIndexTillColon)
-                //   for (let i in newEndPointArr) {
-                //     params[newEndPointArr[i].slice(1,)] = newMyUrlArr[i]
-                //   }
-                //   // console.log({ params })
+                function next($i, $lastI) {
+                    if ($i <= $lastI) {
+                        x.middlewares[$i](cReq, cRes, next.bind({}, $i + 1, $lastI));
+                    }
+                    else {
+                        x.cb(cReq, cRes);
+                    }
+                }
+                if (x.middlewares.length > 0) {
+                    x.middlewares[0](cReq, cRes, next.bind({}, 1, x.middlewares.length - 1));
+                }
+                else {
+                    x.cb(cReq, cRes);
+                    break mainLoop;
+                }
             }
+            // api user :id
+            // api user 5
+            //   let endPointArrIndexTillColon = endPointUrl.findIndex(el => /^:/.test(el))
+            //   // let myUrlArrIndexTillColon  = myUrl.findIndex(el => /^:/.test(el))
+            //   let part1 = endPointUrl.slice(0, endPointArrIndexTillColon).join("/")
+            //   let part2 = myUrl.slice(0, endPointArrIndexTillColon).join("/")
+            //   console.log({ part1, part2 })
+            //   let newEndPointArr = endPointUrl.slice(endPointArrIndexTillColon,)
+            //   let newMyUrlArr = myUrl.slice(endPointArrIndexTillColon)
         })
             .listen(this.port, () => {
-            console.log(`Neotin started at ${this.port} `);
+            console.log(`Neobit started at ${this.port} `);
         });
     }
     async getSampleObject(name = "users") {

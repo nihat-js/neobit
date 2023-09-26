@@ -28,8 +28,12 @@ function createCustomReqRes(req: any, res: any, params = {}, queries = {}) {
 
   };
   let sRes = {
+    setStatusCode: function  (code : number)  { res.statusCode =code ; return this },
     setJsonHeader: () => {
       res.setHeader('Content-Type', 'appliaction/json');
+    },
+    setHeader : (a : string,b : string)=>{
+      res.setHeader(a,b)
     },
     send: function (data: any) {
       res.end(data);

@@ -1,16 +1,36 @@
 //  interface
 declare interface IRes {
   send: (data: string) => void
-  sendFile: (filePath: string) => void
+  sendFile: (filePath: string) => void,
+  setStatusCode : (code : number) => any
+  setHeader : (a : string , b:string) => void
 }
+
+
 declare interface IReq {
   method: string,
+  queries : {
+    [key : string ]: string
+  },
+  params : {
+    [key : string] : string
+  }
 }
+
+
+declare interface IApiBuilderFromArray {
+  arr : [],
+  prefix : string,
+  name : string,
+}
+
+type  MiddlewareFunction = (request? : IReq , response? : IRes , next? : (i:number ,lastI : number) => {}  )  => any
 
 declare interface  IEndPoints {
   method: "GET" | "POST" | "UPDATE" | 'PATCH' | 'DELETE' | "PUT",
   url: string,
-  cb: ReqResFunction
+  cb: ReqResFunction,
+  middlewares :  MiddlewareFunction[]
 }
 type ReqResFunction = (request?: IReq, response?: IRes) => void
 

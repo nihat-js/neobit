@@ -1,10 +1,11 @@
 {
   "name": "neobit",
-  "version": "1.0.1",
-  "description": "Fast HTTP app with Api builder from JSON,Object",
+  "version": "1.0.2",
+  "description": "Fast HTTP app with Api builder ",
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
+    "live-server" : "node live-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": ["neobit","server","neo"],

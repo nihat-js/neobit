@@ -4,27 +4,28 @@ const http = require('http');
 const fs = require('fs/promises');
 const path = require('path')
 const { specialReqRes, createCustomReqRes } = require('./lib/createCustomReqRes');
-const { apiBuilder } = require('./lib/apiBuilder');
-
+const { apiBuilderFromArray } = require("./lib/apiBuilder/index")
 
 
 class Neobit {
   private port: number
   private isDebugging: boolean
   private urlPrefix: string
-  public endPoints: IEndPoints[]
+  public endPoints: IEndPoints[] = []
   constructor(isDebugging = true) {
     this.port = 3000;
-    this.endPoints = [];
+    // this.endPoints = [];
     this.isDebugging = isDebugging
     this.urlPrefix = "/"; //for grouping
   }
 
-  buildApiFromObject({ object }: { object: any }) { apiBuilder.call(this, { data: object, dataType: "object" }) }
-  buildApiFromJson({ filePath, prefix }: { filePath: string, prefix: string }) { apiBuilder.call(this, { filePath, data: filePath, dataType: "json" }) }
+  // async buildApiFromObject({ data }: { data: any }) { return new Promise((res, rej) =>  res(apiBuilder.call(this, { data, dataType: "object" }) )   )  }
+  // buildApiFromJson({ filePath, prefix }: { filePath: string, prefix: string }) { apiBuilder.call(this, { filePath, data: filePath, dataType: "json" }) }
+
+  buildApiFromArray({ name, prefix, arr }: IApiBuilderFromArray) { apiBuilderFromArray.call(this, { name, prefix, arr }) }
 
   // async createTemplateData({ templateName = "users", override = true, destination }: { templateName: string, override: boolean, destination: string }) {
-  //   let source = path.resolve(__dirname, "default", templateName + ".json")
+  //   let source = path.resolve(__dirname, "defaulte", templateName + ".json")
 
   //   destination = destination || path.resolve(process.cwd(), "db", templateName + ".json")
   //   await fs.mkdir(path.resolve(process.cwd(), "db"))
@@ -35,21 +36,38 @@ class Neobit {
   // }
 
   //
-  get(url: string, cb: ReqResFunction): void {
-    this.endPoints.push({ method: 'GET', url: this.getFinalUrl(url), cb: cb });
+  get(url: string, ...functions: any): void {
+    if (functions.length == 0) { throw new Error("CB is required") }
+    let cb = functions.at(-1)
+    let middlewares = functions.slice(0, functions.length - 1)
+
+    this.endPoints.push({ method: 'GET', url: this.getFinalUrl(url), cb, middlewares });
   }
-  post(url: string, cb: ReqResFunction) {
-    this.endPoints.push({ method: 'POST', url: this.getFinalUrl(url), cb });
+  post(url: string, ...functions: any) {
+    if (functions.length == 0) { throw new Error("CB is required") }
+    let cb = functions.at(-1)
+    let middlewares = functions.slice(0, functions.length - 1)
+    this.endPoints.push({ method: 'POST', url: this.getFinalUrl(url), cb, middlewares });
   }
-  delete(url: string, cb: ReqResFunction) {
-    this.endPoints.push({ method: 'DELETE', url: this.getFinalUrl(url), cb });
+  delete(url: string, ...functions: any) {
+    if (functions.length == 0) { throw new Error("CB is required") }
+    let cb = functions.at(-1)
+    let middlewares = functions.slice(0, functions.length - 1)
+    this.endPoints.push({ method: 'DELETE', url: this.getFinalUrl(url), cb, middlewares });
   }
-  put(url: string, cb: ReqResFunction) {
-    this.endPoints.push({ method: 'PUT', url: this.getFinalUrl(url), cb });
+  put(url: string, ...functions: any) {
+    if (functions.length == 0) { throw new Error("CB is required") }
+    let cb = functions.at(-1)
+    let middlewares = functions.slice(0, functions.length - 1)
+    this.endPoints.push({ method: 'PUT', url: this.getFinalUrl(url), cb, middlewares });
   }
-  patch(url: string, cb: ReqResFunction) {
-    this.endPoints.push({ method: 'PATCH', url: this.getFinalUrl(url), cb });
+  patch(url: string, ...functions: any) {
+    if (functions.length == 0) { throw new Error("CB is required") }
+    let cb = functions.at(-1)
+    let middlewares = functions.slice(0, functions.length - 1)
+    this.endPoints.push({ method: 'PATCH', url: this.getFinalUrl(url), cb, middlewares });
   }
+
   getFinalUrl(url: string) {
     if (url.startsWith("/")) url = url.slice(1);
     return this.urlPrefix + url;
@@ -65,22 +83,17 @@ class Neobit {
   }
   listen(port: number) {
     if (port) this.port = port
-    if (this.isDebugging) console.log({ endPoints: this.endPoints });
-
+    if (this.isDebugging) console.log(this.endPoints);
 
     http.createServer((req: any, res: any) => {
       // users?id=:id//
       let [myUrlArr, queries] = parseAndRemoveQueries(splitToParts(req.url))
-
       mainLoop: for (let x of this.endPoints) {
         if (req.method !== x.method) continue;
         let params = {}
         let endPointArray = splitToParts(x.url)
 
         if (endPointArray.length != myUrlArr.length) continue
-
-
-
 
         for (let i in endPointArray) {
           if (!endPointArray[i].startsWith(":") && endPointArray[i] !== myUrlArr[i]) continue mainLoop;
@@ -89,34 +102,42 @@ class Neobit {
           }
         }
         const [cReq, cRes] = createCustomReqRes(req, res, params, queries);
-        x.cb(cReq, cRes); break;
-
-
-        // api user :id
-        // api user 5
-
-        //   let endPointArrIndexTillColon = endPointUrl.findIndex(el => /^:/.test(el))
-        //   // let myUrlArrIndexTillColon  = myUrl.findIndex(el => /^:/.test(el))
-
-        //   let part1 = endPointUrl.slice(0, endPointArrIndexTillColon).join("/")
-        //   let part2 = myUrl.slice(0, endPointArrIndexTillColon).join("/")
-        //   console.log({ part1, part2 })
-
-        //   let newEndPointArr = endPointUrl.slice(endPointArrIndexTillColon,)
-        //   let newMyUrlArr = myUrl.slice(endPointArrIndexTillColon)
-
-
-        //   for (let i in newEndPointArr) {
-        //     params[newEndPointArr[i].slice(1,)] = newMyUrlArr[i]
-        //   }
-        //   // console.log({ params })
-
+        function next($i: number, $lastI: number) {
+          if ($i <= $lastI) {
+            x.middlewares[$i](cReq, cRes, next.bind({}, $i + 1, $lastI))
+          }
+          else  {
+            x.cb(cReq, cRes);
+          }
+        }
+        if (x.middlewares.length > 0) {
+          x.middlewares[0](cReq, cRes, next.bind({}, 1, x.middlewares.length - 1))
+        }
+        else {
+          x.cb(cReq, cRes); break mainLoop;
+        }
 
       }
+
+
+
+
+      // api user :id
+      // api user 5
+      //   let endPointArrIndexTillColon = endPointUrl.findIndex(el => /^:/.test(el))
+      //   // let myUrlArrIndexTillColon  = myUrl.findIndex(el => /^:/.test(el))
+      //   let part1 = endPointUrl.slice(0, endPointArrIndexTillColon).join("/")
+      //   let part2 = myUrl.slice(0, endPointArrIndexTillColon).join("/")
+      //   console.log({ part1, part2 })
+      //   let newEndPointArr = endPointUrl.slice(endPointArrIndexTillColon,)
+      //   let newMyUrlArr = myUrl.slice(endPointArrIndexTillColon)
     })
       .listen(this.port, () => {
-        console.log(`Neotin started at ${this.port} `);
+        console.log(`Neobit started at ${this.port} `);
       });
+
+
+
   }
 
 
