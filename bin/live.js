@@ -1,5 +1,6 @@
+#!/usr/bin/env node
 const fs = require('fs/promises')
-const { Neobit } = require("./index")
+const { Neobit } = require("../index")
 
 async function main() {
   let arr =  JSON.parse (await fs.readFile("./default/users.json", "utf-8"))
