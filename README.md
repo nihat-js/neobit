@@ -5,9 +5,16 @@ Install neobit globally
 
     npm i neobit -g
 
-Run this command
+Run command
 
-    neobit live-server
+    neobit-live --port=8000 --template=users --name=user --prefix=/
+    
+Port number (optional) : 8000 (default)  
+Template (optional)  : users (default) 
+Endpoint (optional) : api/user (default)
+Path (optional) : null (default)
+
+## Standart using
 
 #### Create class instance
     const {Neobit} = require('neobit')
