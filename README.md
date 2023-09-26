@@ -8,11 +8,11 @@ Install neobit globally
 Run command
 
     neobit-live --port=8000 --template=users --name=user --prefix=/
-    
+
 Port number (optional) : 8000 (default)  
-Template (optional)  : users (default) 
+Template (optional)  :  users (default) | orders | produts 
 Endpoint (optional) : api/user (default)
-Path (optional) : null (default)
+Path (optional) : Use either template or path
 
 ## Standart using
 

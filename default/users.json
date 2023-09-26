@@ -1,20 +1,32 @@
-{
-  "users": [
-    {
-      "id": 1,
-      "name": "eltun"
-    },
-    {
-      "id": 2,
-      "name": "ferhad"
-    },
-    {
-      "id": 3,
-      "name": "cosqun"
-    },
-    {
-      "id" : 4,
-      "name" : "orxan"
-     }
-  ]
-}
+[
+  {
+    "id": 1,
+    "name": "nihat",
+    "surname": "Abdullazade",
+    "phoneNumber": "0507514178"
+  },
+  {
+    "id": 2,
+    "name": "zaur",
+    "surname": "Bedelov",
+    "phoneNumber": "0516678123"
+  },
+  {
+    "id": 3,
+    "name": "ilkin",
+    "surname": "Amalov",
+    "phoneNumber": "0515229201"
+  },
+  {
+    "id": 4,
+    "name": "elxan",
+    "surname": "Ceferov",
+    "phoneNumber": "0705421122"
+  },
+  {
+    "id": 5,
+    "name": "ilqar",
+    "surname": "Isgenderli",
+    "phoneNumber": "0513924123"
+  }
+]

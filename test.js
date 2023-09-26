@@ -37,4 +37,4 @@ neo.get('/account', (req, res) => {
 
 
 neo.buildApiFromArray({ name: "contacts", prefix: "api/", arr: contacts })
-neo.listen(3000)
+neo.listen(1000)
